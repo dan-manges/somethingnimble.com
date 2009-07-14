@@ -5,6 +5,6 @@ task :default => :generate
 
 desc "generate the site"
 task :generate do
-  `jekyll`
+  puts `jekyll`
 end
 

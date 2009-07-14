@@ -3,7 +3,7 @@
   <head profile="http://gmpg.org/xfn/11">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>{{ page.title }} - Something Nimble</title>
-    <link rel="stylesheet" type="text/css" href="/css/somethingnimble.css" charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="../../css/somethingnimble.css" charset="utf-8" />
     <link rel="alternate" type="application/rss+xml" title="Something Nimble" href="http://feeds.feedburner.com/somethingnimble" />
   </head>
   <body>
@@ -48,7 +48,7 @@
               <ul>
                 <li>
                   <a href="http://feeds.feedburner.com/somethingnimble">
-                    <img src="/images/rss.jpg" border="0" />
+                    <img src="../../images/rss.jpg" border="0" />
                   </a>
                 </li>
               </ul>
@@ -56,19 +56,19 @@
             <li><h2><a href="#" onclick="return false;">Posts</a></h2>
               <ul id="posts">
                 {% for post in site.posts %}
-                  <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+                  <li><a href="../..{{ post.url }}">{{ post.title }}</a></li>
                 {% endfor %}
               </ul>
             </li>
             <li><h2><a href="#" onclick="return false;">Collaborators</a></h2>
               <ul id="collaborators">
-                <li><a href="/collaborators/z">anonymous z</a></li>
-                <li><a href="/collaborators/clint">Clint Bishop</a></li>
-                <li><a href="/collaborators/dan">Dan Manges</a></li>
-                <li><a href="/collaborators/david">David Vollbracht</a></li>
-                <li><a href="/collaborators/hammer">Hammer</a></li>
-                <li><a href="/collaborators/pat">Pat Farley</a></li>
-                <li><a href="/collaborators/zak">zak</a></li>
+                <li><a href="../../collaborators/z">anonymous z</a></li>
+                <li><a href="../../collaborators/clint">Clint Bishop</a></li>
+                <li><a href="../../collaborators/dan">Dan Manges</a></li>
+                <li><a href="../../collaborators/david">David Vollbracht</a></li>
+                <li><a href="../../collaborators/hammer">Hammer</a></li>
+                <li><a href="../../collaborators/pat">Pat Farley</a></li>
+                <li><a href="../../collaborators/zak">zak</a></li>
               </ul>
             </li>
           </ul>

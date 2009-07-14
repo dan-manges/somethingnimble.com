@@ -1,3 +1,5 @@
 * rss feed
 * mixology link to /extra
+* remove duplication in the layouts
+* relative URLs are brittle
 
