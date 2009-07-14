@@ -1,0 +1,175 @@
+---
+layout: post
+title: "mixology: the art of mixing and unmixing"
+created_on: 2007-09-08 10:09:00
+created_on_formatted: September 08, 2007
+---
+
+<h4>what</h4>
+<p>a gem that allows objects to effectively mix and unmix modules</p>
+
+<h4>who</h4>
+<p><a href="http://www.klankboomklang.com/">Pat Farley</a>, <a href="http://anonymousz.blogspot.com">anonymous z</a>, <a href="http://www.dcmanges.com/blog">Dan Manges</a>, <a href="http://www.somethingnimble.com/collaborators/clint">Clint Bishop</a></p>
+
+<h4>why</h4>
+<p>modifying an object's behavior by mixing in modules is very useful. thankfully, Ruby gives us this ability out of the box. but sometimes we want to <b>unmix</b> behavior. however, mixing out a module is a bit clumsy in Ruby.</p>
+
+<p>enter Mixology.</p>
+
+<p>let's consider the interface for a door. it's pretty simple. doors basically have two states: open and closed. we knock on doors that are closed so someone will let us in. and if a door is open, we walk right on in.</p>
+
+<p>
+we might model this like so:
+</p>
+
+<pre>
+class Door
+
+  def initialize(open = false)
+    if open
+      extend Open
+    else
+      extend Closed
+    end
+    
+    def closed?
+      kind_of? Closed
+    end
+    
+    def opened?
+      kind_of? Open
+    end
+    
+  end
+  
+  module Closed
+    def knock
+      puts "knock, knock"
+    end
+
+    def open
+      extend Open
+    end
+  end
+  
+  module Open
+    def knock
+      raise "cannot knock on an open door, just come on in"
+    end
+    
+    def close
+      extend Closed
+    end
+  end
+end
+</pre>
+
+<p>let's write a few tests for our door states.</p>
+<pre>
+class DoorTest &lt; Test::Unit::TestCase
+  def test_an_open_door_is_opened_and_not_closed
+    door = Door.new :open
+    assert door.opened?
+    assert !door.closed?
+  end
+
+  def test_a_closed_door_is_closed_and_not_opened
+    door = Door.new
+    assert door.closed?
+    assert !door.opened?
+  end
+
+  def test_closing_an_open_door_makes_the_door_closed_but_not_opened
+    door = Door.new :open
+    door.close
+    assert door.closed?
+    assert !door.opened?
+  end
+
+  def test_opening_a_closed_door_makes_the_door_opened_but_not_closed
+    door = Door.new
+    door.open
+    assert door.opened?
+    assert !door.closed?
+  end
+end
+</pre>
+<p>time to run the tests:</p>
+<pre>
+Loaded suite door
+Started
+..FF
+Finished in 0.006623 seconds.
+
+  1) Failure:
+test_closing_an_open_door_makes_the_door_closed_but_not_opened(DoorTest) [door.rb:67]:
+&lt;false&gt; is not true.
+
+  2) Failure:
+test_opening_a_closed_door_makes_the_door_opened_but_not_closed(DoorTest) [door.rb:74]:
+&lt;false&gt; is not true.
+
+4 tests, 8 assertions, 2 failures, 0 errors
+</pre>
+<p>when we instantiate a door and mixin the opened or closed state, our tests pass.  however, the tests for transitioning between states fail.  when we extend the door instance with the mixin for the new state, the old mixin is still there.  this gives us some undesired behavior. although ruby will use the behavior in the most recently included mixin, this can still be problematic.  we could change this example to work better for these tests, but then we would still have problems transitioning from open to closed and back.</p>
+
+<p>unfortunately, plain ol' ordinary ruby, or POOR, (Farleyism) does not give us a clean way to implement our state pattern this way. but Mixology does.</p>
+
+<h4>here's the code using Mixology:</h4>
+<pre>
+require "rubygems"
+require "mixology"
+class Door
+  def initialize(open = false)
+    @open = open
+    if open
+      mixin Open
+    else
+      mixin Closed
+    end
+  end
+  
+  module Closed
+    ...
+    def open
+      unmix Closed
+      mixin Open
+    end
+    ...
+  end
+  
+  module Open
+    ...
+    def close
+      unmix Open
+      mixin Closed
+    end
+    ...
+  end
+end
+</pre>
+<p>and now our tests should pass.</p>
+<pre>
+Loaded suite door
+Started
+....
+Finished in 0.000793 seconds.
+
+4 tests, 8 assertions, 0 failures, 0 errors
+</pre>
+<p>ah, much better.</p>
+
+<h4>why not just use a more traditional state pattern approach?</h4>
+<p>because it's kind of a pain. essentially, <a href="/bliki/extra/traditional_and_rubyish_state_pattern_impls.rhtml">traditional, and even non-traditional rubyish, state pattern implementations</a> are laborious.</p>
+
+<h4>what else do we use Mixology for?</h4>
+<p>it's also handy for decorating objects that hang around in memory and need undecorating.</p>
+
+<h4>a word on implementation</h4>
+<p>when we (Clint, Dan, and Nonymous) started implementing mixology, we ran into a few problems with POOR. nonymous called Farley and asked him to take a look at our failing tests. as usual, we had started with failing tests. anyway, Farley had the next day off from work and in one day implemented much of Mixology all by his own self. the rest of us were, of course, busy toiling at our day jobs and contributing to society. so our sincere thanks to you, Farles.
+</p>
+
+<p>oh, and speaking of Farley's hard work, a JRuby implementation is also available.</p>
+<h4>getting mixology</h4> 
+
+<p>you can get Mixology 10 Proof (the latest version) via &nbsp;<tt>gem install mixology</tt></p>

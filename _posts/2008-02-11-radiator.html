@@ -1,0 +1,57 @@
+---
+layout: post
+title: "raditor: all your build statuses in amazing 6 bit color"
+created_on: 2008-02-11 20:09:00  
+created_on_formatted: February 11, 2008
+---
+
+<h4>brought to you by Hammer</h4>
+<p>(with a little help from <a href="http://www.somethingnimble.com/collaborators/z">nonymous</a>, <a href ="http://www.somethingnimble.com/collaborators/david">David Vollbracht</a>, and <a href="http://www.dcmanges.com/blog">Dan Manges</a>)</p>
+
+<h4>disciplined feedback &amp; unceremonious essence</h4>
+
+<p><a href="http://memeagora.blogspot.com/">Neal Ford</a>, a friend of ours, likes to ask people that he's interviewing to describe some intricate concept in just two words. the challenge is to articulately extract as much essence as possible</p>
+
+<p>a favorite is "describe agile programming in just two words". we like the answer "disciplined feedback". so much of the agile philosophy is about discipline. and so much of it is about feedback loops providing useful information. and then again about having the discipline to make appropriate corrections based on feedback. and so on....</p>
+
+<h4>visibility of feedback</h4>
+
+<p>as fans of feedback we use things like story walls and continuous integration* to give us feedback on the status of our work.</p>
+
+<p>story card walls are simple. and done right, they radiate information effortlessly throughout a dev room. you look up and you can see the status of all the important, trackable work being done. instant feedback. discipline is not working on tasks that aren't on the wall and moving cards appropriately through their wild life-cycle</p>
+
+<p>continuous integration** gives you feedback on your builds. it can quickly inform you if that last check in didn't play nicely with all the other code you've got. it also helps maintain discipline. nobody wants to be caught breaking the build. unfortunately, unlike a giant card wall, it can be hard to get room-wide visibility for the status or your builds.</p>
+
+<p>having to check a build page gets old. growl messages are only useful if you're in front of a computer. and they can be bothersome.</p>
+
+<p>on a recent project, we had such little visibility into the status of our various and splendid builds that we coerced a teammate into continually*** notifying us of their activity. unfortunately, he found the work so depressing that he began to drink heavily. occasionally he came to work drunk, affecting a fake Spanish accent, and wearing a large sombrero for no apparent reason.</p>
+
+<img src="/images/el_build_externals.jpg" style="width: 600px;">
+
+<p>while we were happy to have a very visible build notification mechanism, we decided to do without the drunkenness and cultural insensitivity of the manual solution.</p>
+
+<p>but not before replacing it with a much more efficient, automated one....</p>
+
+<h4>introducing radiator</h4>
+<br/>
+<img src="/images/radiator_externals.jpg" style="width: 600px;">
+<br/>
+<br/>
+<p>radiator is a ruby-based service for radiating messages with a USB beta brite. it includes a plugin for cruise.rb allowing you to radiate your build status messages without driving another teammate to drink. 
+</p>
+	
+<p>it's pretty sweet really.</p>
+<img src="/images/radiator_success.jpg" style="width: 600px;">
+
+
+<h4>I can has radiator?</h4>
+<p>yes, you can. get it anonymous style with </p>
+<p>	<tt>svn co http://hammersforge.com/svn/radiator/trunk</tt></p>
+
+<p>the readme should be all you need to start radiating your project today.</p>
+<p>well, that and a <a href="http://www.betabrite.com/">beta brite</a>.</p>
+
+<hr/>
+<p><font size="-2">*nonymous would annoyingly like to point out that it should be "continual integration"<br/>
+	**nonymous would annoyingly like to point out that it should be "continual integration", again<br/>
+*** are you happy nonymous?</font></p>

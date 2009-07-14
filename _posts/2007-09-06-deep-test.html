@@ -1,0 +1,53 @@
+---
+layout: post
+title: deepTest. it's time for a quickie.
+created_on: 2007-09-06 06:09:00
+created_on_formatted: September 06, 2007
+---
+
+<p>(initial collaborators: <a href="http://www.dcmanges.com/blog">Dan Manges</a>, <a href="http://www.somethingnimble.com/collaborators/zak">zak</a>, <a href ="http://www.somethingnimble.com/collaborators/david">David Vollbracht</a>)</p>
+
+<h4>what</h4>
+<p>a gem that allows us to replace Rake::TestTask with DeepTest::TestTask, leveraging <a href="http://www.ruby-doc.org/stdlib/libdoc/rinda/rdoc/index.html">Rinda</a> to run tests in multiple processes</p>
+
+<h4>why</h4>
+<p>with the right hardware (starting with a dual core cpu), it significantly reduces the running time of tests. the more processors, the more significant</p>
+
+<h4>history</h4>
+<p>like many ideas, this one was born of frustration. our functional tests were getting too slow. for us this meant they had breached the two minute mark. this is simply too long when practicing tdd and checking in often.</p>
+
+<p>what to do? a colleague predictably repeated his mantra of "fix the longest running test". and though this is a perfectly valid strategy, we had done this last week. and the week before. we wanted a more semi-permanent solution.</p>
+
+<p>we could make individual tests faster, but we're only going to write more tests. eventually, in serial mode, even the fastest won't be fast enough.</p>
+
+<p>then Nonymous said "let's throw hardware at this problem".</p>
+
+<p>later that day, Nonymous and Manges created a simple (read: "hacky") processed-based Rake task that split the test files into groups which were then run in parallel.</p>
+
+<p>it worked well enough. it cut our functional build time on a two processor machine in half. but then Manges and Vollbracht came up with a much better and cleaner solution. using Rinda. essentially deep_test throws all the tests onto a tuple space.  workers take the tests and write results back. simple.</p>
+
+<h4>caveats</h4>
+
+<p>some tests that use ActiveRecord against a MySQL database may throw an ActiveRecord::StatementInvalid exception with a message "Deadlock found when trying to get lock...".  we're not sure why this happens yet. and it happens randomly. but for now, when this occurs, we run the test again.  if it deadlocks a second time, we print out "-deadlock" and skip it.  after a month of using this approach and over 1,500 check-ins, we haven't had a single broken build due to skipping a test that has deadlocked. also, our cruise build runs tests serialially so this is not an issue for our CI environment</p>
+
+<h4>sayonara fixtures</h4>
+
+<p>because the tests run in separate processes, each processes establishes a separate database connection.  because Rails tests run in transactions, this is fine.  a test can insert records into the database, and a test running in another process cannot see that data.  however, if you're using fixtures you won't be able to take advantage of deeptest to run your tests twice as fast.  data from fixtures is loaded outside the transaction. therefore, loading fixtures in one process will mess up tests running in another.  if you want to get rid of fixtures, consider <a href="http://www.dcmanges.com/blog/38">using a factory</a> instead</p>
+
+<h4>getting started</h4> 
+
+<p>it won't take long (unless you need to remove fixtures)</p>
+
+<p><tt>gem install deep_test</tt></p>
+
+<p>In your Rakefile:</p>
+<pre>
+  require "rubygems"
+  require "deep_test/rake_tasks"
+
+  # sample DeepTest task
+  DeepTest::TestTask.new "task_name" do |t|
+    t.pattern = "test/**/*_test.rb"
+    t.processes = 2 # optional, defaults to 2
+  end
+</pre>

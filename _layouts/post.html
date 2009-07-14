@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head profile="http://gmpg.org/xfn/11">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>{{ page.title }} - Something Nimble</title>
+    <link rel="stylesheet" type="text/css" href="/css/somethingnimble.css" charset="utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="Something Nimble" href="http://feeds.feedburner.com/somethingnimble" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+	      <h1><span><a href="/"><span style="color:green">Something</span>&nbsp;<span style="color:green">Nimble</span></a></span></h1>
+	      <h2><span style="color:green">soylent green is people. so is software.</span></h2>
+      </div>
+      <div id="page">
+	      <div id="content">
+          <div class="atomentry" id="article-1">
+            <h2 class="title">
+              <a href="{{ page.url }}" rel="bookmark">{{ page.title }}</a>
+            </h2>
+            <div class="content">
+              {{ content }}
+            </div>
+            <p class="author">
+              Posted on
+              <abbr class="published">
+                <span class="posted_date">
+                  {{ page.created_on_formatted }}
+                </span>
+              </abbr>
+            </p>	
+            <ul class="meta">
+              <li>
+                <a href="{{ page.url }}" rel="bookmark">permalink</a> |
+                <a href="mailto:something.nimble@gmail.com">send us feedback</a>
+              </li>
+            </ul>
+          </div>
+      		<div class="navigation">
+      			<div class="alignleft"></div>
+      			<div class="alignright"></div>
+      		</div>
+	      </div>
+	      <div id="sidebar">
+          <ul>
+            <li>
+              <h2><a href="http://feeds.feedburner.com/somethingnimble">RSS</a></h2>
+              <ul>
+                <li>
+                  <a href="http://feeds.feedburner.com/somethingnimble">
+                    <img src="/images/rss.jpg" border="0" />
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li><h2><a href="#" onclick="return false;">Posts</a></h2>
+              <ul id="posts">
+                {% for post in site.posts %}
+                  <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+            <li><h2><a href="#" onclick="return false;">Collaborators</a></h2>
+              <ul id="collaborators">
+                <li><a href="/collaborators/z">anonymous z</a></li>
+                <li><a href="/collaborators/clint">Clint Bishop</a></li>
+                <li><a href="/collaborators/dan">Dan Manges</a></li>
+                <li><a href="/collaborators/david">David Vollbracht</a></li>
+                <li><a href="/collaborators/hammer">Hammer</a></li>
+                <li><a href="/collaborators/pat">Pat Farley</a></li>
+                <li><a href="/collaborators/zak">zak</a></li>
+              </ul>
+            </li>
+          </ul>
+      	</div>
+        <br style="clear:both;" />
+      </div>
+      <div id="footer">
+        <hr />
+        <ul>
+          <li><span style="color:green">powered by <a href="http://www.w3.org/TR/xhtml1/">HTML</a> /
+          style based on <a href="http://www.style.com/vogue/">Vogue</a></span></li>
+        </ul>
+      </div>
+    </div>
+  <!-- Original theme design by Packagethief - http://quotedprintable.com/pages/scribbish -->
+  <!-- WordPress theme port by Kenny Pitt - http://pittcrew.net/geekblog/scribbishwp -->
+    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+    _uacct = "UA-2543998-1";
+    urchinTracker();
+    </script>
+  </body>
+</html>

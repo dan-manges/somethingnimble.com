@@ -1,0 +1,149 @@
+---
+layout: post
+title: deepTest. those promiscuous teen years
+created_on: 2008-06-01 16:09:00
+created_on_formatted: June 01, 2008
+---
+
+<h4>catching up. . .</h4>
+<p>
+
+When we last saw DeepTest, it was stepping intrepidly out into the world to parallelize your
+tests.  Just a young buck but raring and ready to go.  A lot has
+happened since then, and DeepTest has made it to its teen years (in the
+world of software that means version 1.2 of course).
+</p>
+
+<p>
+DeepTest now supports
+parallelizing RSpec examples in addition to Test::Unit based tests.  RSpec
+support was like DeepTest's first dance -- it takes a while to screw up the
+courage to ask her out on the floor, but it gets easier with each dance. And so DeepTest has become quite the socialite. Making its full-blown debut into adolescence, DeepTest now happily distributes
+tests remotely, simultaneously do-si-do-ing with any number of machines.
+</p>
+
+<h4>no more tripping over your own shoelaces</h4>
+<p>
+
+It used to be that DeepTest was young and clumsy when dealing with your
+database.  Using a single database caused occasional deadlocks when multiple
+tests collided on the same table.  DeepTest has grown up and learned
+some database diplomacy.  If you tell it to, DeepTest will setup a separate
+database for each worker, thus avoiding deadlocks.  If you're using Mysql
+and ActiveRecord with a fairly vanilla setup, all you need is this in your
+Rakefile:
+</p>
+<pre>
+DeepTest::TestTask.new "task_name" do |t|
+ ...
+ t.worker_listener = "DeepTest::Database::MysqlSetupListener"
+end
+</pre>
+<p>
+ The MysqlSetupListener will dump the schema from your test database,
+ create a new database for each worker, load the dumped schema, and then
+ connect the workers to one of the databases.  And separate databases means
+ no more deadlocks.
+</p>
+<p>
+ If you're not using Mysql, DeepTest does not currently have out-of-the-box
+ support for your database.  <tt>DeepTest::Database::SetupListener</tt> is
+ available to help you, but you'll have to dig down and implement the details
+ of creating and dropping databases and dumping and loading schemas.
+</p>
+<p>
+If you do decide to help DeepTest grow by trying out other databases flavors, please
+ consider contributing the code so others can benefit from your
+ labor.
+</p>
+
+<h4>first dance with RSpec</h4>
+<p>
+Dancing with your RSpec examples is just as easy for DeepTest as playing
+with your Test::Unit tests.  If you haven't done it yet, install the gem.
+</p>
+<p><tt>gem install deep_test</tt></p>
+
+<p>Then put something like this is your Rakefile:</p>
+<pre>
+ require "rubygems"
+ require "deep_test/rake_tasks"
+
+ # sample SpecTask using DeepTest
+ Spec::Rake::SpecTask.new(:deep_spec) do |t|
+   t.spec_files = FileList['spec/**/*_spec.rb']
+   t.deep_test :number_of_workers =&gt; 2   # optional, defaults to 2
+ end
+</pre>
+
+<h4>get an entourage to do the work for you</h4>
+<p>
+
+The most exciting addition for DeepTest is the ability to distribute your tests
+across multiple machines.  Instead of sitting there all by its lonesome on your
+poor little developer machine, DeepTest can now command an army of machines to
+do its bidding and run your tests even faster.  To get started you'll need 2
+or more machines that will run tests (call them deeptest1 and deeptest2), and
+your developer machine that has a project already using DeepTest to run
+functional tests locally.  Both the deeptest machines will need to be able to
+access the developer machine over password-less ssh. All machines involved need
+to have rsync installed.  On deeptest1 and deeptest2, install the gem.  Then
+start a test server on each one.
+
+</p>
+<p>
+<tt>gem install deep_test</tt>
+</p>
+<p>
+<tt>deep_test test_server</tt>
+</p>
+<p>
+ For this example configuration, let's use deeptest1 as the master server that keeps track of the rest
+ of the test servers.  On deeptest1, start a master server process.
+</p>
+<pre>
+deep_test master_test_server \
+           druby://deeptest1:4022/ \
+           druby://deeptest2:4022/
+</pre>
+<p>
+ (the line continuations are just to look nice, you can put it all on one line)
+</p>
+<p>
+ Now change the test task in your rakefile to specify the distributed options for deeptest.
+</p>
+<pre>
+DeepTest::TestTask.new "task_name" do |t|
+ t.pattern = "test/**/*_test.rb"
+ t.number_of_workers = 2
+ t.distributed_server = "druby://deeptest1:4021"
+
+ # If you don't have a database you can leave this line out.
+ # If you have a non-Mysql database, please see the documentation
+ #   at rubyforge.
+ t.worker_listener = "DeepTest::Database::MysqlSetupListener"
+
+ t.sync_options = {
+   # assumes Rakefile is in the root of your project
+   :source =&gt; File.expand_path(File.dirname(__FILE__)),
+
+   # username on local machine that is accessible by deeptest1 and 2
+   :username =&gt; "developer"
+ }
+end
+</pre>
+<h4>the big payoff</h4>
+<p>
+DeepTest was conceived because our functional tests hurt, and hurt bad.  We
+originally reported that we felt pain over the 2 minute mark.  Local
+parallelization solved the problem for us temporarily, but we kept adding
+functional tests.  Eventually it reached the point were functional tests took 6
+1/2 minutes to run <b>using DeepTest</b>.  It was time for a change.  By
+distributing the tests to 3 machines, we brought our functional test run down
+to 2 minutes again.  While we'll obviously keep growing, the higher
+parallelization slows the growth.  But even better, we can
+keep adding more machines to run test suites to scale the problem indefinitely.
+</p>
+<p>
+Now if only DeepTest would get a job and move out!
+</p>
